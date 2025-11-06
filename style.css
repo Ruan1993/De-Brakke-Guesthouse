@@ -1,0 +1,190 @@
+:root {
+    --color-primary: #06b6d4; /* Tailwind cyan-500 */
+    --color-accent: #f59e0b; /* Tailwind amber-500 for subtle warmth */
+    --color-bg: #f8fafc; /* Tailwind slate-50 - Very light background */
+    --color-text: #1f2937; /* Tailwind gray-800 */
+}
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    scroll-behavior: smooth;
+}
+/* Enhanced hover effect for navigation */
+.nav-link:hover {
+    color: #0891b2; /* Darker cyan on hover */
+    transform: translateY(-1px);
+    transition: all 0.2s ease-in-out;
+}
+/* Custom hero styling for the ocean feel */
+.hero-bg {
+    /* Assuming images are in the same folder as index.html */
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.9), rgba(13, 148, 136, 0.9)), 
+                url('./Image 16.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* --- NEW SUBTLE BACKGROUND FOR SECTIONS --- */
+.section-bg-subtle {
+    background-image: url('./Image 15.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(255, 255, 255, 0.9); 
+    background-blend-mode: overlay;
+}
+
+.section-header {
+    border-left: 5px solid var(--color-primary);
+}
+/* Custom scrollbar for a cleaner look */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 10px;
+}
+
+/* ---------------------------------------------- */
+/* UPDATED: Button Interactivity */
+/* ---------------------------------------------- */
+.btn-primary {
+    background-color: var(--color-primary);
+    /* Transition includes transform for pop-out/press effects */
+    transition: all 0.3s ease-in-out, transform 0.1s; 
+    /* Ensure no focus outline on button */
+    outline: none;
+}
+.btn-primary:hover {
+    background-color: #0891b2; /* A slightly darker cyan */
+    /* POP-OUT EFFECT: Lift and scale slightly */
+    box-shadow: 0 10px 20px -5px rgba(8, 145, 178, 0.6), 0 4px 6px -2px rgba(8, 145, 178, 0.3);
+    transform: scale(1.02) translateY(-2px); 
+}
+.btn-primary:active {
+    /* PRESS EFFECT: Push it down and slightly shrink it */
+    transform: scale(0.98);
+    box-shadow: 0 4px 8px -2px rgba(8, 145, 178, 0.4);
+}
+/* Style for the temporary fixed message box */
+#temp-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+.gallery-item {
+    overflow: hidden;
+    border-radius: 0.75rem; 
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+.gallery-item img {
+    transition: transform 0.5s ease-in-out, filter 0.5s ease-in-out;
+}
+.gallery-item:hover img {
+    transform: scale(1.05);
+    filter: brightness(0.95);
+}
+
+
+/* ---------------------------------------------- */
+/* UPDATED: Animation & Effects Styles */
+/* ---------------------------------------------- */
+
+/* 1. Hero Content Animation on Load */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-content-animation {
+    animation: fadeInDown 1s ease-out 0.3s backwards;
+}
+
+/* 2. "Reveal on Scroll" Animations (Used by .reveal-up class) */
+.reveal-up {
+    /* Initial state: Invisible and pushed down 30px */
+    opacity: 0;
+    transform: translateY(30px);
+    
+    /* Subtle initial definition and shadow for modern look */
+    border: 1px solid #e0f2f7; /* Very light cyan border */
+    box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.05);
+
+    /* Transition includes box-shadow for hover accent */
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out, box-shadow 0.3s ease-in-out;
+}
+
+.reveal-up.visible {
+    /* Final state: Fully visible and in original position */
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-up:hover {
+    /* Subtle blue-accented lift on hover for sections (e.g., room cards) */
+    box-shadow: 0 8px 25px -5px rgba(6, 182, 212, 0.2), 0 4px 6px -2px rgba(6, 182, 212, 0.1);
+}
+
+
+/* ---------------------------------------------- */
+/* NEW: Modern Form Focus (Blue Outlines) */
+/* ---------------------------------------------- */
+
+/* Blue Outline/Focus Effect for Inputs - Creates the "slick" blue glow */
+input[type="text"], 
+input[type="email"], 
+input[type="number"], 
+input[type="date"], 
+textarea {
+    /* Ensure a clean starting border */
+    border: 1px solid #d1d5db; /* gray-300 */
+    transition: all 0.2s ease-in-out;
+    outline: none; /* Remove default blue focus ring */
+}
+
+input[type="text"]:focus, 
+input[type="email"]:focus, 
+input[type="number"]:focus, 
+input[type="date"]:focus, 
+textarea:focus {
+    /* Custom Blue Glow Ring */
+    border-color: #06b6d4 !important; /* var(--color-primary) */
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.4) !important; /* Blue glow ring */
+}
+
+
+/* 3. "Scroll to Top" Button Transitions */
+#scroll-to-top.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+}
+#scroll-to-top {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: all 0.3s ease-in-out;
+    /* Ensure pop-out effect applies */
+    transition: all 0.3s ease-in-out, transform 0.1s; 
+}
+#scroll-to-top:hover {
+    transform: scale(1.10) translateY(0);
+}
+#scroll-to-top:active {
+    transform: scale(0.95);
+    background-color: #0e7490; /* Darker cyan on press */
+}
