@@ -20,14 +20,14 @@ body {
 .hero-bg {
     /* Assuming images are in the same folder as index.html */
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.9), rgba(13, 148, 136, 0.9)), 
-                url('./Image 16.jpg');
+                url('images/Image 16.jpg');
     background-size: cover;
     background-position: center;
 }
 
 /* --- NEW SUBTLE BACKGROUND FOR SECTIONS --- */
 .section-bg-subtle {
-    background-image: url('./Image 15.jpg');
+    background-image: url('images/Image 15.jpg');
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
