@@ -18,26 +18,54 @@ body {
 }
 /* Custom hero styling for the ocean feel */
 .hero-bg {
-    /* Assuming images are in the same folder as index.html */
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.9), rgba(13, 148, 136, 0.9)), 
-                url('images/Image 16.jpg');
+    /* Set position context for the pseudo-element */
+    position: relative; 
+    /* Remove original background properties */
+    background: none; 
     background-size: cover;
     background-position: center;
+    /* Ensure the hero has height */
+    min-height: 500px; 
+    /* Important: Content goes here and sits above the image */
+    z-index: 1; 
+}
+
+.hero-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Set the image and make it cover */
+    background: url('images/Image 18.jpg');
+    background-size: cover;
+    background-position: center;
+    /* Apply opacity directly to the background image */
+    opacity: .8; /* 80% opaque = 20% transparent */
+    /* Ensure the pseudo-element stays behind the content */
+    z-index: 0; 
 }
 
 /* --- NEW SUBTLE BACKGROUND FOR SECTIONS --- */
 .section-bg-subtle {
-    background-image: url('images/Image 15.jpg');
+    background-image: url('images/Image 1.jpg');
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
-    background-color: rgba(255, 255, 255, 0.9); 
+    /* Use a semi-transparent white color to subtly fade and lighten the image */
+    background-color: rgba(208, 255, 251, 0.85); 
     background-blend-mode: overlay;
+    opacity: 1; 
 }
 
+/* UPDATED HEADER STYLE */
 .section-header {
-    border-left: 5px solid var(--color-primary);
+    /* Replaced left border with a modern bottom border */
+    padding-bottom: 0.5rem; /* pb-2 */
+    border-bottom: 3px solid var(--color-primary);
 }
+
 /* Custom scrollbar for a cleaner look */
 ::-webkit-scrollbar {
     width: 8px;
@@ -93,6 +121,21 @@ body {
     filter: brightness(0.95);
 }
 
+/* --- NEW: Amenity Card Styles --- */
+.amenity-card {
+    background-color: #ffffff;
+    padding: 1.25rem 1rem; /* p-5 py-5 */
+    border-radius: 0.75rem; /* rounded-xl */
+    border: 1px solid #e0f2f7; /* Light cyan border */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease-in-out;
+}
+.amenity-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px -5px rgba(6, 182, 212, 0.2);
+    border-color: #a5f3fc; /* Brighter cyan border */
+}
+
 
 /* ---------------------------------------------- */
 /* UPDATED: Animation & Effects Styles */
@@ -115,13 +158,14 @@ body {
 }
 
 /* 2. "Reveal on Scroll" Animations (Used by .reveal-up class) */
+/* UPDATED: Removed border */
 .reveal-up {
     /* Initial state: Invisible and pushed down 30px */
     opacity: 0;
     transform: translateY(30px);
     
     /* Subtle initial definition and shadow for modern look */
-    border: 1px solid #e0f2f7; /* Very light cyan border */
+    /* border: 1px solid #e0f2f7; */ /* <-- BORDER REMOVED */
     box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.05);
 
     /* Transition includes box-shadow for hover accent */
@@ -148,7 +192,8 @@ body {
 input[type="text"], 
 input[type="email"], 
 input[type="number"], 
-input[type="date"], 
+input[type="date"],
+input[type="tel"],
 textarea {
     /* Ensure a clean starting border */
     border: 1px solid #d1d5db; /* gray-300 */
@@ -159,7 +204,8 @@ textarea {
 input[type="text"]:focus, 
 input[type="email"]:focus, 
 input[type="number"]:focus, 
-input[type="date"]:focus, 
+input[type="date"]:focus,
+input[type="tel"]:focus,
 textarea:focus {
     /* Custom Blue Glow Ring */
     border-color: #06b6d4 !important; /* var(--color-primary) */

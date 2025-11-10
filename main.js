@@ -11,9 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Custom Message Box Function and Map Link Handler ---
+    // --- Custom Message Box Function ---
     const tempMessage = document.getElementById('temp-message');
-    const mapLink = document.getElementById('map-link');
 
     function showTempMessage(message) {
         if (!tempMessage) return;
@@ -30,17 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 300); 
         }, 4000);
     }
+    
 
-    if (mapLink) {
-        mapLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            showTempMessage('Google Maps integration will be added here once the URL is available!');
-        });
-    }
+    /* ---------------------------------------------- */
+    /* UPDATED: Lightbox Functions */
+    /* ---------------------------------------------- */
 
-    // --- Lightbox Functions ---
-    let galleryImages = [];
-    let currentIndex = 0;
+    let activeGallery = []; // This will hold the gallery that is currently open
+    let currentIndex = 0;   // The index of the image within the activeGallery
     
     const modal = document.getElementById('lightbox-modal');
     const modalImage = document.getElementById('lightbox-image');
@@ -48,9 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const lightboxPrev = document.getElementById('lightbox-prev');
     const lightboxNext = document.getElementById('lightbox-next');
 
-    function openLightbox(index) {
-        if (index < 0 || index >= galleryImages.length) return;
-        currentIndex = index;
+    // NEW: openLightbox now takes a specific gallery and a starting index
+    function openLightbox(gallery, startIndex) {
+        if (!gallery || gallery.length === 0) return;
+        
+        activeGallery = gallery; // Set the active gallery
+        currentIndex = startIndex; // Set the starting image index
+        
         updateModalImage();
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden'; 
@@ -59,54 +59,60 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeLightbox() {
         modal.classList.add('hidden');
         document.body.style.overflow = 'auto';
+        activeGallery = []; // Clear the active gallery
     }
 
+    // UPDATED: updateModalImage now uses activeGallery
     function updateModalImage() {
-        if (galleryImages[currentIndex]) {
-            modalImage.src = galleryImages[currentIndex];
+        if (activeGallery[currentIndex]) {
+            modalImage.src = activeGallery[currentIndex];
         }
     }
 
+    // UPDATED: Navigation functions now use activeGallery.length
     function showPrevImage() {
-        currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+        currentIndex = (currentIndex - 1 + activeGallery.length) % activeGallery.length;
         updateModalImage();
     }
 
     function showNextImage() {
-        currentIndex = (currentIndex + 1) % galleryImages.length;
+        currentIndex = (currentIndex + 1) % activeGallery.length;
         updateModalImage();
     }
 
+    // NEW: initializeGallery logic is completely different
     function initializeGallery() {
-        // 1. Manually add the two room images (if they exist)
+        // 1. Define our three separate galleries
+        // NOTE: The image paths must be correct!
+        const mainSuiteGallery = ['images/Image 3.jpg', 'images/Image 4.jpg'];
+        const twinRoomGallery = ['images/Image 10.jpg', 'images/Image 11.jpg'];
+        const mainGallery = [];
+
+        // 2. Attach listener for the Main Suite image
         const mainSuiteImg = document.getElementById('main-suite-img');
-        const twinRoomImg = document.getElementById('twin-room-img');
-
         if (mainSuiteImg) {
-            galleryImages.push(mainSuiteImg.src);
-            const mainSuiteIndex = galleryImages.length - 1;
-            mainSuiteImg.addEventListener('click', () => openLightbox(mainSuiteIndex));
+            // It opens mainSuiteGallery starting at index 1 (which is Image 4.jpg)
+            mainSuiteImg.addEventListener('click', () => openLightbox(mainSuiteGallery, 1));
         }
 
+        // 3. Attach listener for the Twin Room image
+        const twinRoomImg = document.getElementById('twin-room-img');
         if (twinRoomImg) {
-            galleryImages.push(twinRoomImg.src);
-            const twinRoomIndex = galleryImages.length - 1;
-            twinRoomImg.addEventListener('click', () => openLightbox(twinRoomIndex));
+            // It opens twinRoomGallery starting at index 1 (which is Image 11.jpg)
+            twinRoomImg.addEventListener('click', () => openLightbox(twinRoomGallery, 1));
         }
 
-        // 2. Add the main gallery images
+        // 4. Populate and attach listeners for the Main Gallery
         const mainGalleryItems = document.querySelectorAll('#gallery .gallery-item img');
-        const startingIndex = galleryImages.length; 
-
         mainGalleryItems.forEach((img, index) => {
-            galleryImages.push(img.src);
-            const fullIndex = startingIndex + index;
+            mainGallery.push(img.src);
             if(img.parentNode) {
-                img.parentNode.addEventListener('click', () => openLightbox(fullIndex));
+                // It opens mainGallery starting at the clicked image's index
+                img.parentNode.addEventListener('click', () => openLightbox(mainGallery, index));
             }
         });
 
-        // 3. Attach listeners to modal buttons
+        // 5. Attach listeners to modal buttons (this logic is unchanged)
         if(modal) modal.addEventListener('click', (e) => {
              if (e.target === modal) closeLightbox();
         });
@@ -133,44 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Form Simulation ---
-    const bookingForm = document.getElementById('booking-form');
-    if (bookingForm) {
-        bookingForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const nameInput = document.getElementById('name');
-            const checkIn = document.getElementById('check-in').value;
-            const checkOut = document.getElementById('check-out').value;
-            const messageBox = document.getElementById('booking-message');
-
-            if (!checkIn || !checkOut || !nameInput.value) {
-                messageBox.textContent = "Please fill in all required fields.";
-                messageBox.className = "text-center p-4 rounded-lg text-lg font-semibold bg-red-100 text-red-700";
-                messageBox.classList.remove('hidden');
-                return;
-            }
-
-            messageBox.textContent = `Thank you, ${nameInput.value}! Your reservation request for ${checkIn} to ${checkOut} has been noted. We will contact you soon via email or phone to confirm availability and finalize the booking.`;
-            messageBox.className = "text-center p-4 rounded-lg text-lg font-semibold bg-green-100 text-green-700";
-            messageBox.classList.remove('hidden');
-            event.target.reset();
-        });
-    }
-
-    const contactForm = document.getElementById('general-contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const contactName = document.getElementById('contact-name').value;
-            const contactMessageStatus = document.getElementById('contact-message-status');
-
-            contactMessageStatus.textContent = `Hello ${contactName}, thank you for your message! We will get back to you shortly.`;
-            contactMessageStatus.className = "text-center p-3 rounded-lg text-sm bg-green-100 text-green-700";
-            contactMessageStatus.classList.remove('hidden');
-            event.target.reset();
-        });
-    }
+    // ALL JAVASCRIPT FOR BOOKING AND CONTACT FORMS HAS BEEN REMOVED
+    // Netlify will now handle the form submissions automatically.
 
 
     // --- Scroll spy and active link highlighting ---
@@ -200,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     /* ---------------------------------------------- */
-    /* NEW: Page Animations & Effects */
+    /* Page Animations & Effects */
     /* ---------------------------------------------- */
 
     // --- 1. "Scroll to Top" Button Logic ---
