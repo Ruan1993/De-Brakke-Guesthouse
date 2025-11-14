@@ -1,5 +1,5 @@
 :root {
-    --color-primary: #06b6d4; /* Tailwind cyan-500 */
+    --color-primary: #0e7490; /* Tailwind cyan-700 */
     --color-accent: #f59e0b; /* Tailwind amber-500 for subtle warmth */
     --color-bg: #f8fafc; /* Tailwind slate-50 - Very light background */
     --color-text: #1f2937; /* Tailwind gray-800 */
@@ -12,7 +12,7 @@ body {
 }
 /* Enhanced hover effect for navigation */
 .nav-link:hover {
-    color: #0891b2; /* Darker cyan on hover */
+    color: #0e7490; /* Higher contrast cyan on hover */
     transform: translateY(-1px);
     transition: all 0.2s ease-in-out;
 }
@@ -49,14 +49,12 @@ body {
 
 /* --- NEW SUBTLE BACKGROUND FOR SECTIONS --- */
 .section-bg-subtle {
-    background-image: url('images/Image 1.jpg');
-    background-attachment: fixed;
+    background-image: linear-gradient(rgba(208, 255, 251, 0.85), rgba(208, 255, 251, 0.85)), url('images/Image 1.jpg');
+    background-attachment: scroll;
     background-size: cover;
     background-position: center;
-    /* Use a semi-transparent white color to subtly fade and lighten the image */
-    background-color: rgba(208, 255, 251, 0.85); 
-    background-blend-mode: overlay;
-    opacity: 1; 
+    opacity: 1;
+    content-visibility: auto;
 }
 
 /* UPDATED HEADER STYLE */
@@ -169,7 +167,8 @@ body {
     box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.05);
 
     /* Transition includes box-shadow for hover accent */
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out, box-shadow 0.3s ease-in-out;
+    will-change: opacity, transform;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
 
 .reveal-up.visible {
@@ -233,4 +232,10 @@ textarea:focus {
 #scroll-to-top:active {
     transform: scale(0.95);
     background-color: #0e7490; /* Darker cyan on press */
+}
+
+/* Create a dedicated compositing layer for sticky header to reduce flicker */
+.sticky {
+    will-change: transform;
+    transform: translateZ(0);
 }

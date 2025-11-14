@@ -8,6 +8,8 @@
     <title>De Brakke Guesthouse - Stilbaai West</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
@@ -33,7 +35,7 @@
     </div>
     <div id="temp-message" class="hidden bg-yellow-100 text-yellow-800 transition-opacity duration-300"></div>
 
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-lg"> 
+    <header class="sticky top-0 z-50 bg-white/95 shadow-lg"> 
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             
             <div class="flex items-center space-x-3">
@@ -48,7 +50,6 @@
                 <a href="#about" class="nav-link">About</a>
                 <a href="#rooms" class="nav-link">Rooms & Amenities</a>
                 <a href="#gallery" class="nav-link">Gallery</a>
-                <a href="#booking" class="nav-link">Book Now</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
             <a href="#booking" class="hidden md:block px-4 py-2 text-sm font-semibold rounded-full text-white btn-primary shadow-lg hover:shadow-xl">Make a Booking</a>
@@ -63,8 +64,8 @@
                 <a href="#about" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-slate-100">About</a>
                 <a href="#rooms" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-slate-100">Rooms</a>
                 <a href="#gallery" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-slate-100">Gallery</a>
-                <a href="#booking" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-slate-100">Book Now</a>
                 <a href="#contact" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-slate-100">Contact</a>
+                <a href="#booking" class="mt-2 block w-full max-w-xs px-4 py-2 text-sm font-semibold rounded-full text-white btn-primary shadow-lg hover:shadow-xl text-center">Make a Booking</a>
             </div>
         </div>
     </header>
@@ -275,7 +276,7 @@
                         <p class="text-sm text-cyan-600">*Exact rates depend on season, dates, and number of guests.</p>
                     </div>
 
-                    <form id="booking-form" class="space-y-6" name="booking-form" data-netlify="true">
+                    <form id="booking-form" class="space-y-6" name="booking-form">
                         <div class="grid sm:grid-cols-2 gap-6">
                             <div>
                                 <label for="check-in" class="block text-sm font-medium text-gray-700">Check-in Date</label>
@@ -300,6 +301,10 @@
                                 <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
                                 <input type="text" id="name" name="name" placeholder="Your Name" required class="mt-1 block w-full rounded-md border-gray-300 p-3 border border-gray-200">
                             </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" placeholder="Phone number" required class="mt-1 block w-full rounded-md border-gray-300 p-3 border border-gray-200">
+                            </div>
                         </div>
 
                         <div>
@@ -308,7 +313,7 @@
                             </button>
                         </div>
                         
-                        <div id="booking-message" class="hidden text-center p-4 rounded-lg text-lg font-semibold bg-green-100 text-green-700">
+                        <div id="booking-message" role="status" aria-live="polite" class="hidden text-center p-4 rounded-lg text-lg font-semibold border">
                             </div>
                     </form>
                 </div>
@@ -383,7 +388,7 @@
                     <div class="md:col-span-2 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
                         <h4 class="text-xl font-bold mb-4 text-cyan-600 border-b border-cyan-100 pb-2">Send Us a Message</h4>
                         
-                        <form id="general-contact-form" class="space-y-6" name="contact-form" data-netlify="true">
+                        <form id="general-contact-form" class="space-y-6" name="contact-form">
                 
                             <div>
                                 <label for="contact-name" class="form-label">Your Name <span class="text-red-500">*</span></label>
@@ -409,7 +414,7 @@
                                 Send Inquiry
                             </button>
                             
-                            <div id="contact-message-status" class="hidden text-center p-3 rounded-lg text-sm bg-green-100 text-green-700">
+                            <div id="contact-message-status" role="status" aria-live="polite" class="hidden text-center p-3 rounded-lg text-sm font-medium border">
                                 </div>
                         </form>
                     </div>
@@ -441,7 +446,7 @@
                     &copy; 2025 De Brakke Guesthouse. All rights reserved. | Designed with a Coastal Vibe.
                 </p>
                 <p class="mt-1">
-                    Designed by <a href="https://ruancoetzee.netlify.app" target="_blank" class="text-cyan-400 hover:text-cyan-300 hover:underline transition duration-300 font-semibold">Ruan Coetzee</a>
+                    Designed by <a href="https://ruancoetzee.netlify.app" target="_blank" class="text-cyan-400 hover:text-cyan-300 hover:underline transition duration-300 font-semibold">RC Digital Creations</a>
                 </p>
             </div>
         </div>
@@ -455,4 +460,3 @@
     <script src="main.js" defer></script>
 </body>
 </html>
-}
