@@ -1,3 +1,56 @@
+// --- NEW FIREBASE INITIALIZATION LOGIC (Reads Netlify Environment Variables) ---
+const FIREBASE_CONFIG = {
+    apiKey: import.meta.env && import.meta.env.VITE_API_KEY,
+    authDomain: import.meta.env && import.meta.env.VITE_AUTH_DOMAIN,
+    projectId: import.meta.env && import.meta.env.VITE_PROJECT_ID,
+    storageBucket: import.meta.env && import.meta.env.VITE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env && import.meta.env.VITE_MESSAGING_SENDER_ID,
+    appId: import.meta.env && import.meta.env.VITE_APP_ID,
+    measurementId: import.meta.env && import.meta.env.VITE_MEASUREMENT_ID
+};
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+function initFirebaseFromWindowConfig() {
+    if (typeof window !== 'undefined' && window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.projectId) {
+        try {
+            const app = initializeApp(window.FIREBASE_CONFIG);
+            const db = getFirestore(app);
+            window.db = db;
+            window.collection = collection;
+            window.addDoc = addDoc;
+            window.getDocs = getDocs;
+            window.deleteDoc = deleteDoc;
+            window.doc = doc;
+            console.log('✅ Firebase Connected (window config)!');
+        } catch (error) {
+            console.error('❌ Firebase failed to initialize (window config):', error);
+        }
+    }
+}
+
+function initFirebaseFromEnv() {
+    if (FIREBASE_CONFIG && FIREBASE_CONFIG.projectId && !window.db) {
+        try {
+            const app = initializeApp(FIREBASE_CONFIG);
+            const db = getFirestore(app);
+            window.db = db;
+            window.collection = collection;
+            window.addDoc = addDoc;
+            window.getDocs = getDocs;
+            window.deleteDoc = deleteDoc;
+            window.doc = doc;
+            console.log('✅ Firebase Connected (env)!');
+        } catch (error) {
+            console.error('❌ Firebase failed to initialize (env):', error);
+        }
+    }
+}
+
+initFirebaseFromWindowConfig();
+initFirebaseFromEnv();
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Mobile Menu Toggle ---
@@ -237,6 +290,9 @@ document.addEventListener('DOMContentLoaded', () => {
             locale: { firstDayOfWeek: 1 },
             defaultDate: 'today'
         };
+        const checkOutEl = document.querySelector('#check-out');
+        const checkInEl = document.querySelector('#check-in');
+        if (!checkOutEl || !checkInEl) return;
         checkOutPicker = flatpickr('#check-out', { ...commonConfig });
         checkInPicker = flatpickr('#check-in', {
             ...commonConfig,
@@ -276,14 +332,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (checkOutPicker) checkOutPicker.set('disable', disabledDates);
     }
 
-    setupDatePickers([]);
+    if (document.querySelector('#check-in') && document.querySelector('#check-out')) {
+        setupDatePickers([]);
+    }
 
-    const waitForFirebase = setInterval(async () => {
-        if (window.db) {
-            clearInterval(waitForFirebase);
-            initBookingsFromFirebase();
-        }
-    }, 100);
+    if (!window.db) {
+        initFirebaseFromWindowConfig();
+        initFirebaseFromEnv();
+    }
+    if (window.db) initBookingsFromFirebase();
 
     const bookingForm = document.getElementById('booking-form');
     const msgDiv = document.getElementById('booking-message');
@@ -312,22 +369,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             let firebaseOk = false;
             let web3Ok = false;
-            try {
-                if (window.db) {
-                    await window.addDoc(window.collection(window.db, 'bookings'), {
-                        checkIn,
-                        checkOut,
-                        name,
-                        guests: adults,
-                        children,
-                        email,
-                        phone,
-                        message,
-                        createdAt: new Date().toISOString()
-                    });
-                    firebaseOk = true;
-                }
-            } catch (_) {}
+    try {
+        if (window.db) {
+            await window.addDoc(window.collection(window.db, 'bookings'), {
+                checkIn,
+                checkOut,
+                name,
+                guests: adults,
+                children,
+                email,
+                phone,
+                message,
+                createdAt: new Date().toISOString()
+            });
+            firebaseOk = true;
+        }
+    } catch (error) {
+        console.error('Firestore addDoc error', error);
+    }
             try {
                 const payload = {
                     access_key: '50c68771-8428-431f-8372-18697ca141ac',
