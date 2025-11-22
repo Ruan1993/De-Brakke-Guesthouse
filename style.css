@@ -1,33 +1,46 @@
 :root {
-    --color-primary: #06b6d4; /* Tailwind cyan-500 */
-    --color-accent: #f59e0b; /* Tailwind amber-500 for subtle warmth */
-    --color-bg: #f8fafc; /* Tailwind slate-50 - Very light background */
-    --color-text: #1f2937; /* Tailwind gray-800 */
+    --color-primary: #c19b76; /* Hotelzo Gold */
+    --color-secondary: #202020; /* Dark Charcoal */
+    --color-bg: #ffffff;
+    --color-text: #4b5563; 
 }
+
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Lato', sans-serif;
     background-color: var(--color-bg);
     color: var(--color-text);
     scroll-behavior: smooth;
+    line-height: 1.7;
 }
-/* Enhanced hover effect for navigation */
-.nav-link:hover {
-    color: #0891b2; /* Darker cyan on hover */
-    transform: translateY(-1px);
-    transition: all 0.2s ease-in-out;
+
+/* Luxury Link Hover */
+.nav-link {
+    position: relative;
+    transition: color 0.3s ease;
 }
-/* Custom hero styling for the ocean feel */
+/* Underline animation for links */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--color-primary);
+    transition: width 0.3s ease;
+}
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Custom Hero styling */
 .hero-bg {
-    /* Set position context for the pseudo-element */
-    position: relative; 
-    /* Remove original background properties */
-    background: none; 
+    position: relative;
+    background: none;
     background-size: cover;
     background-position: center;
-    /* Ensure the hero has height */
-    min-height: 500px; 
-    /* Important: Content goes here and sits above the image */
-    z-index: 1; 
+    min-height: 85vh; /* Taller hero */
+    z-index: 1;
 }
 
 .hero-bg::before {
@@ -37,115 +50,43 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    /* Set the image and make it cover */
+    /* Use Image 18 as the main hero background */
     background: url('images/Image 18.jpg');
     background-size: cover;
     background-position: center;
-    /* Apply opacity directly to the background image */
-    opacity: .8; /* 80% opaque = 20% transparent */
-    /* Ensure the pseudo-element stays behind the content */
-    z-index: 0; 
+    /* No opacity on image itself, handled by overlay div in HTML */
+    z-index: -1; 
 }
 
-/* --- NEW SUBTLE BACKGROUND FOR SECTIONS --- */
-.section-bg-subtle {
-    background-image: url('images/Image 1.jpg');
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
-    /* Use a semi-transparent white color to subtly fade and lighten the image */
-    background-color: rgba(208, 255, 251, 0.85); 
-    background-blend-mode: overlay;
-    opacity: 1; 
-}
-
-/* UPDATED HEADER STYLE */
-.section-header {
-    /* Replaced left border with a modern bottom border */
-    padding-bottom: 0.5rem; /* pb-2 */
-    border-bottom: 3px solid var(--color-primary);
-}
-
-/* Custom scrollbar for a cleaner look */
+/* Remove default scrollbar styling for a cleaner look */
 ::-webkit-scrollbar {
     width: 8px;
 }
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
 ::-webkit-scrollbar-thumb {
+    background: #d1d5db; 
+    border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
     background: var(--color-primary);
-    border-radius: 10px;
 }
 
-/* ---------------------------------------------- */
-/* UPDATED: Button Interactivity */
-/* ---------------------------------------------- */
-.btn-primary {
-    background-color: var(--color-primary);
-    /* Transition includes transform for pop-out/press effects */
-    transition: all 0.3s ease-in-out, transform 0.1s; 
-    /* Ensure no focus outline on button */
-    outline: none;
+/* Input Styles - Minimalist Border Bottom */
+input, select, textarea {
+    border-radius: 0 !important; /* Force sharp edges */
 }
-.btn-primary:hover {
-    background-color: #0891b2; /* A slightly darker cyan */
-    /* POP-OUT EFFECT: Lift and scale slightly */
-    box-shadow: 0 10px 20px -5px rgba(8, 145, 178, 0.6), 0 4px 6px -2px rgba(8, 145, 178, 0.3);
-    transform: scale(1.02) translateY(-2px); 
-}
-.btn-primary:active {
-    /* PRESS EFFECT: Push it down and slightly shrink it */
-    transform: scale(0.98);
-    box-shadow: 0 4px 8px -2px rgba(8, 145, 178, 0.4);
-}
-/* Style for the temporary fixed message box */
-#temp-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    padding: 1rem 1.5rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-}
-.gallery-item {
-    overflow: hidden;
-    border-radius: 0.75rem; 
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    cursor: pointer;
-}
-.gallery-item img {
-    transition: transform 0.5s ease-in-out, filter 0.5s ease-in-out;
-}
-.gallery-item:hover img {
-    transform: scale(1.05);
-    filter: brightness(0.95);
+input:focus, select:focus, textarea:focus {
+    box-shadow: none !important;
+    border-color: var(--color-primary) !important;
 }
 
-/* --- NEW: Amenity Card Styles --- */
-.amenity-card {
-    background-color: #ffffff;
-    padding: 1.25rem 1rem; /* p-5 py-5 */
-    border-radius: 0.75rem; /* rounded-xl */
-    border: 1px solid #e0f2f7; /* Light cyan border */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease-in-out;
-}
-.amenity-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px -5px rgba(6, 182, 212, 0.2);
-    border-color: #a5f3fc; /* Brighter cyan border */
-}
-
-
-/* ---------------------------------------------- */
-/* UPDATED: Animation & Effects Styles */
-/* ---------------------------------------------- */
-
-/* 1. Hero Content Animation on Load */
+/* Animation Classes */
 @keyframes fadeInDown {
     from {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;
@@ -154,83 +95,48 @@ body {
 }
 
 .hero-content-animation {
-    animation: fadeInDown 1s ease-out 0.3s backwards;
+    animation: fadeInDown 1.2s ease-out 0.2s backwards;
 }
 
-/* 2. "Reveal on Scroll" Animations (Used by .reveal-up class) */
-/* UPDATED: Removed border */
 .reveal-up {
-    /* Initial state: Invisible and pushed down 30px */
     opacity: 0;
-    transform: translateY(30px);
-    
-    /* Subtle initial definition and shadow for modern look */
-    /* border: 1px solid #e0f2f7; */ /* <-- BORDER REMOVED */
-    box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.05);
-
-    /* Transition includes box-shadow for hover accent */
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out, box-shadow 0.3s ease-in-out;
+    transform: translateY(40px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
 }
 
 .reveal-up.visible {
-    /* Final state: Fully visible and in original position */
     opacity: 1;
     transform: translateY(0);
 }
-
-.reveal-up:hover {
-    /* Subtle blue-accented lift on hover for sections (e.g., room cards) */
-    box-shadow: 0 8px 25px -5px rgba(6, 182, 212, 0.2), 0 4px 6px -2px rgba(6, 182, 212, 0.1);
-}
-
-
-/* ---------------------------------------------- */
-/* NEW: Modern Form Focus (Blue Outlines) */
-/* ---------------------------------------------- */
-
-/* Blue Outline/Focus Effect for Inputs - Creates the "slick" blue glow */
-input[type="text"], 
-input[type="email"], 
-input[type="number"], 
-input[type="date"],
-input[type="tel"],
-textarea {
-    /* Ensure a clean starting border */
-    border: 1px solid #d1d5db; /* gray-300 */
-    transition: all 0.2s ease-in-out;
-    outline: none; /* Remove default blue focus ring */
-}
-
-input[type="text"]:focus, 
-input[type="email"]:focus, 
-input[type="number"]:focus, 
-input[type="date"]:focus,
-input[type="tel"]:focus,
-textarea:focus {
-    /* Custom Blue Glow Ring */
-    border-color: #06b6d4 !important; /* var(--color-primary) */
-    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.4) !important; /* Blue glow ring */
-}
-
-
-/* 3. "Scroll to Top" Button Transitions */
-#scroll-to-top.hidden {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-}
-#scroll-to-top {
+/* --- CALENDAR UPGRADES --- */
+/* 1. Custom "Booked" Style (Diagonal Stripes + Strikethrough) */
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+    background:
+        linear-gradient(45deg, transparent 48%, rgba(239, 68, 68, 0.6) 49%, rgba(239, 68, 68, 0.6) 51%, transparent 52%),
+        #fee2e2 !important;
+    color: #b91c1c !important;
+    font-weight: normal;
     opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    transition: all 0.3s ease-in-out;
-    /* Ensure pop-out effect applies */
-    transition: all 0.3s ease-in-out, transform 0.1s; 
+    border-color: transparent !important;
 }
-#scroll-to-top:hover {
-    transform: scale(1.10) translateY(0);
+/* 2. Make the "Available" days look clearer (White background) */
+.flatpickr-day {
+    background: #ffffff;
+    border: 1px solid #f3f4f6;
 }
-#scroll-to-top:active {
-    transform: scale(0.95);
-    background-color: #0e7490; /* Darker cyan on press */
+/* 3. Highlight "Today" with your Gold Theme */
+.flatpickr-day.today {
+    border-color: var(--color-primary) !important;
+    color: var(--color-secondary) !important;
+}
+.flatpickr-day.today:hover {
+    background: var(--color-primary) !important;
+    color: #ffffff !important;
+}
+/* Legend square for helper note */
+.diagonal-strike {
+    background:
+        linear-gradient(45deg, transparent 48%, rgba(239, 68, 68, 0.6) 49%, rgba(239, 68, 68, 0.6) 51%, transparent 52%),
+        #fee2e2;
 }

@@ -1,4 +1,3 @@
-// Wait for the HTML document to be fully loaded before running any scripts
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Mobile Menu Toggle ---
@@ -16,11 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showTempMessage(message) {
         if (!tempMessage) return;
-        
         tempMessage.textContent = message;
         tempMessage.classList.remove('hidden', 'opacity-0');
         tempMessage.classList.add('opacity-100');
-
         setTimeout(() => {
             tempMessage.classList.remove('opacity-100');
             tempMessage.classList.add('opacity-0');
@@ -30,13 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
     
-
-    /* ---------------------------------------------- */
-    /* UPDATED: Lightbox Functions */
-    /* ---------------------------------------------- */
-
-    let activeGallery = []; // This will hold the gallery that is currently open
-    let currentIndex = 0;   // The index of the image within the activeGallery
+    // --- Lightbox Functions ---
+    let activeGallery = []; 
+    let currentIndex = 0;   
+    let touchStartX = 0;
+    let touchStartY = 0;
     
     const modal = document.getElementById('lightbox-modal');
     const modalImage = document.getElementById('lightbox-image');
@@ -44,13 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const lightboxPrev = document.getElementById('lightbox-prev');
     const lightboxNext = document.getElementById('lightbox-next');
 
-    // NEW: openLightbox now takes a specific gallery and a starting index
     function openLightbox(gallery, startIndex) {
         if (!gallery || gallery.length === 0) return;
-        
-        activeGallery = gallery; // Set the active gallery
-        currentIndex = startIndex; // Set the starting image index
-        
+        activeGallery = gallery; 
+        currentIndex = startIndex; 
         updateModalImage();
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden'; 
@@ -59,17 +51,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeLightbox() {
         modal.classList.add('hidden');
         document.body.style.overflow = 'auto';
-        activeGallery = []; // Clear the active gallery
+        activeGallery = []; 
     }
 
-    // UPDATED: updateModalImage now uses activeGallery
     function updateModalImage() {
-        if (activeGallery[currentIndex]) {
-            modalImage.src = activeGallery[currentIndex];
+        const item = activeGallery[currentIndex];
+        if (item) {
+            modalImage.src = item.src || item;
         }
     }
 
-    // UPDATED: Navigation functions now use activeGallery.length
     function showPrevImage() {
         currentIndex = (currentIndex - 1 + activeGallery.length) % activeGallery.length;
         updateModalImage();
@@ -80,39 +71,64 @@ document.addEventListener('DOMContentLoaded', () => {
         updateModalImage();
     }
 
-    // NEW: initializeGallery logic is completely different
+    function handleTouchStart(e) {
+        if (!e.touches || e.touches.length === 0) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }
+
+    function handleTouchEnd(e) {
+        if (!e.changedTouches || e.changedTouches.length === 0) return;
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+        const deltaX = endX - touchStartX;
+        const deltaY = endY - touchStartY;
+        if (Math.abs(deltaX) > 40 && Math.abs(deltaY) < 80) {
+            if (deltaX > 0) {
+                showPrevImage();
+            } else {
+                showNextImage();
+            }
+        }
+    }
+
     function initializeGallery() {
-        // 1. Define our three separate galleries
-        // NOTE: The image paths must be correct!
-        const mainSuiteGallery = ['images/Image 3.jpg', 'images/Image 4.jpg'];
-        const twinRoomGallery = ['images/Image 10.jpg', 'images/Image 11.jpg'];
+        const mainSuiteGallery = [
+            { src: 'images/Image 3.jpg', caption: 'Main Suite view' },
+            { src: 'images/Image 4.jpg', caption: 'Main Suite bedroom' }
+        ];
+        const twinRoomGallery = [
+            { src: 'images/Image 10.jpg', caption: 'Twin Room beds' },
+            { src: 'images/Image 11.jpg', caption: 'Twin Room angle' }
+        ];
         const mainGallery = [];
 
-        // 2. Attach listener for the Main Suite image
         const mainSuiteImg = document.getElementById('main-suite-img');
         if (mainSuiteImg) {
-            // It opens mainSuiteGallery starting at index 1 (which is Image 4.jpg)
             mainSuiteImg.addEventListener('click', () => openLightbox(mainSuiteGallery, 1));
+            const mainSuiteOverlay = mainSuiteImg.nextElementSibling;
+            if (mainSuiteOverlay) {
+                mainSuiteOverlay.addEventListener('click', () => openLightbox(mainSuiteGallery, 1));
+            }
         }
 
-        // 3. Attach listener for the Twin Room image
         const twinRoomImg = document.getElementById('twin-room-img');
         if (twinRoomImg) {
-            // It opens twinRoomGallery starting at index 1 (which is Image 11.jpg)
             twinRoomImg.addEventListener('click', () => openLightbox(twinRoomGallery, 1));
+            const twinRoomOverlay = twinRoomImg.nextElementSibling;
+            if (twinRoomOverlay) {
+                twinRoomOverlay.addEventListener('click', () => openLightbox(twinRoomGallery, 1));
+            }
         }
 
-        // 4. Populate and attach listeners for the Main Gallery
         const mainGalleryItems = document.querySelectorAll('#gallery .gallery-item img');
         mainGalleryItems.forEach((img, index) => {
-            mainGallery.push(img.src);
+            mainGallery.push({ src: img.src, caption: img.alt || '' });
             if(img.parentNode) {
-                // It opens mainGallery starting at the clicked image's index
                 img.parentNode.addEventListener('click', () => openLightbox(mainGallery, index));
             }
         });
 
-        // 5. Attach listeners to modal buttons (this logic is unchanged)
         if(modal) modal.addEventListener('click', (e) => {
              if (e.target === modal) closeLightbox();
         });
@@ -125,23 +141,21 @@ document.addEventListener('DOMContentLoaded', () => {
             e.stopPropagation();
             showNextImage();
         });
+
+        if (modal) {
+            modal.addEventListener('touchstart', handleTouchStart, { passive: true });
+            modal.addEventListener('touchend', handleTouchEnd, { passive: true });
+        }
     }
 
     initializeGallery();
 
-    // Keyboard navigation for lightbox
     document.addEventListener('keydown', (event) => {
         if (modal.classList.contains('hidden')) return;
         if (event.key === 'Escape') closeLightbox();
         if (event.key === 'ArrowLeft') showPrevImage();
         if (event.key === 'ArrowRight') showNextImage();
     });
-
-
-    // --- Form Simulation ---
-    // ALL JAVASCRIPT FOR BOOKING AND CONTACT FORMS HAS BEEN REMOVED
-    // Netlify will now handle the form submissions automatically.
-
 
     // --- Scroll spy and active link highlighting ---
     const sections = document.querySelectorAll('main section');
@@ -151,31 +165,28 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('scroll', () => {
             let current = '';
             sections.forEach(section => {
-                const sectionTop = section.offsetTop - 100;
+                const sectionTop = section.offsetTop - 150;
                 if (window.scrollY >= sectionTop) {
                     current = section.getAttribute('id');
                 }
             });
 
             navLinks.forEach(link => {
-                link.classList.remove('text-cyan-600', 'font-bold');
-                link.classList.add('text-gray-700', 'font-medium');
+                // Remove old classes
+                link.classList.remove('text-primary'); 
+                link.classList.add('text-gray-600'); 
+                
                 if (link.href && link.href.includes(current)) {
-                    link.classList.add('text-cyan-600', 'font-bold');
-                    link.classList.remove('text-gray-700', 'font-medium');
+                    // Add new active classes (Gold)
+                    link.classList.add('text-primary');
+                    link.classList.remove('text-gray-600');
                 }
             });
         });
     }
 
-
-    /* ---------------------------------------------- */
-    /* Page Animations & Effects */
-    /* ---------------------------------------------- */
-
-    // --- 1. "Scroll to Top" Button Logic ---
+    // --- Scroll to Top & Reveal ---
     const scrollToTopBtn = document.getElementById('scroll-to-top');
-
     if (scrollToTopBtn) {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 500) {
@@ -186,17 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         scrollToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth' 
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 
-
-    // --- 2. "Reveal on Scroll" Logic (Intersection Observer) ---
     const revealElements = document.querySelectorAll('.reveal-up');
-
     if (revealElements.length > 0) {
         const revealObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
@@ -205,13 +210,152 @@ document.addEventListener('DOMContentLoaded', () => {
                     observer.unobserve(entry.target);
                 }
             });
-        }, {
-            threshold: 0.1 // Triggers when 10% of element is visible
-        });
+        }, { threshold: 0.1 });
 
         revealElements.forEach(element => {
             revealObserver.observe(element);
         });
     }
+    const waitForFirebase = setInterval(async () => {
+        if (window.db) {
+            clearInterval(waitForFirebase);
+            initBookingSystem();
+        }
+    }, 100);
 
-}); // End of DOMContentLoaded
+    async function initBookingSystem() {
+        const bookingsRef = window.collection(window.db, 'bookings');
+        let snapshot;
+        try {
+            snapshot = await window.getDocs(bookingsRef);
+        } catch (error) {
+            return;
+        }
+        let disabledDates = [];
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.checkIn && data.checkOut) {
+                disabledDates.push({ from: data.checkIn, to: data.checkOut });
+            }
+        });
+        const commonConfig = {
+            dateFormat: 'Y-m-d',
+            minDate: 'today',
+            disable: disabledDates,
+            disableMobile: true,
+            locale: { firstDayOfWeek: 1 },
+            defaultDate: 'today'
+        };
+        const checkOutPicker = flatpickr('#check-out', { ...commonConfig });
+        const checkInPicker = flatpickr('#check-in', {
+            ...commonConfig,
+            onReady: function(selectedDates, dateStr, instance) {
+                setTimeout(() => instance.open(), 150);
+            },
+            onChange: function(selectedDates) {
+                if (selectedDates && selectedDates.length > 0) {
+                    const date = selectedDates[0];
+                    const nextDay = new Date(date);
+                    nextDay.setDate(date.getDate() + 1);
+                    checkOutPicker.set('minDate', nextDay);
+                    setTimeout(() => checkOutPicker.open(), 100);
+                }
+            }
+        });
+        const bookingForm = document.getElementById('booking-form');
+        const msgDiv = document.getElementById('booking-message');
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', async e => {
+                e.preventDefault();
+                const btn = bookingForm.querySelector('button[type="submit"]');
+                const originalText = btn ? btn.innerText : '';
+                const formData = new FormData(bookingForm);
+                const checkIn = formData.get('check-in');
+                const checkOut = formData.get('check-out');
+                const name = formData.get('name');
+                const adults = formData.get('adults');
+                const children = formData.get('children');
+                const email = formData.get('email');
+                const phone = formData.get('phone');
+                const message = formData.get('message');
+                if (!checkIn || !checkOut) {
+                    alert('Please select a valid date range.');
+                    return;
+                }
+                if (btn) {
+                    btn.innerText = 'Reserving...';
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+                let firebaseOk = false;
+                let web3Ok = false;
+                try {
+                    await window.addDoc(window.collection(window.db, 'bookings'), {
+                        checkIn,
+                        checkOut,
+                        name,
+                        guests: adults,
+                        children,
+                        email,
+                        phone,
+                        message,
+                        createdAt: new Date().toISOString()
+                    });
+                    firebaseOk = true;
+                } catch (_) {}
+                try {
+                    const payload = {
+                        access_key: '50c68771-8428-431f-8372-18697ca141ac',
+                        subject: 'NEW BOOKING FOR DE BRAKKE GUESTHOUSE!',
+                        from_name: 'De Brakke Guesthouse',
+                        name,
+                        email,
+                        phone,
+                        adults,
+                        children,
+                        check_in: checkIn,
+                        check_out: checkOut,
+                        message
+                    };
+                    const res = await fetch('https://api.web3forms.com/submit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    if (data && data.success) web3Ok = true;
+                } catch (_) {}
+                if (web3Ok) {
+                    if (msgDiv) {
+                        msgDiv.className = 'block text-center mt-4 p-3 bg-green-100 text-green-800 rounded-md';
+                        msgDiv.innerText = `Success! Booked for ${checkIn} to ${checkOut}. We will contact you shortly.`;
+                    }
+                    const newRange = { from: checkIn, to: checkOut };
+                    if (typeof checkInPicker !== 'undefined' && checkInPicker) {
+                        checkInPicker.set('disable', [...checkInPicker.config.disable, newRange]);
+                    }
+                    if (typeof checkOutPicker !== 'undefined' && checkOutPicker) {
+                        checkOutPicker.set('disable', [...checkOutPicker.config.disable, newRange]);
+                    }
+                    if (btn) {
+                        btn.innerText = 'Reservation Received';
+                        btn.disabled = true;
+                        btn.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
+                } else {
+                    if (msgDiv) {
+                        msgDiv.className = 'block text-center mt-4 p-3 bg-red-100 text-red-800 rounded-md';
+                        msgDiv.innerText = 'Something went wrong. Please try again.';
+                    }
+                    if (btn) {
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
+                }
+            });
+        }
+    }
+
+    
+});
