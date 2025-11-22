@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Discover peace at De Brakke Guesthouse, your coastal escape in Stilbaai West, Western Cape. Two luxury en-suite rooms, open-plan living, and secure parking."
+    />
+
+    <title>De Brakke Guesthouse - Luxury Stay</title>
+    <link rel="icon" href="images/De_Brakke_Logo.svg" type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#c19b76" /* Luxury Gold */,
+              secondary: "#202020" /* Dark Charcoal */,
+              light: "#f9f9f9" /* Off-white */,
+              white: "#ffffff",
+            },
+            fontFamily: {
+              sans: ["Lato", "sans-serif"],
+              serif: ["Playfair Display", "serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css"
+    />
+    <script src="firebase-config.js"></script>
+  </head>
+  <body class="antialiased bg-white text-gray-600 font-sans">
+    <div
+      id="lightbox-modal"
+      class="fixed inset-0 z-[9999] hidden bg-black bg-opacity-95 flex items-center justify-center p-4"
+    >
+      <div class="relative max-w-7xl max-h-full">
+        <button
+          id="lightbox-close"
+          class="absolute top-4 right-4 text-white text-3xl font-serif hover:text-primary transition z-20"
+          aria-label="Close image gallery"
+        >
+          ✕
+        </button>
+        <button
+          id="lightbox-prev"
+          class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-primary transition z-10"
+        >
+          ❮
+        </button>
+        <button
+          id="lightbox-next"
+          class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-primary transition z-10"
+        >
+          ❯
+        </button>
+        <img
+          id="lightbox-image"
+          src=""
+          alt="Guesthouse Photo"
+          class="max-h-[90vh] max-w-[90vw] object-contain shadow-2xl border-4 border-white/10"
+        />
+      </div>
+    </div>
+
+    <div
+      id="temp-message"
+      class="hidden bg-primary text-white transition-opacity duration-300"
+    ></div>
+
+    <header
+      class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100"
+    >
+      <nav
+        class="container mx-auto px-6 py-5 flex justify-between items-center"
+      >
+        <div class="flex items-center space-x-3">
+          <img
+            src="images/De_Brakke_Logo.svg"
+            alt="De Brakke Guesthouse logo"
+            class="w-14 h-14 md:w-16 md:h-16"
+          />
+          <h1
+            class="text-3xl md:text-3xl lg:text-4xl font-serif font-bold text-secondary tracking-wide"
+          >
+            De Brakke Guesthouse
+          </h1>
+        </div>
+
+        <div
+          class="hidden md:flex space-x-10 text-sm font-bold uppercase tracking-widest text-gray-500"
+        >
+          <a href="#home" class="nav-link hover:text-primary transition-colors"
+            >Home</a
+          >
+          <a href="#about" class="nav-link hover:text-primary transition-colors"
+            >About</a
+          >
+          <a href="#rooms" class="nav-link hover:text-primary transition-colors"
+            >Rooms</a
+          >
+          <a
+            href="#gallery"
+            class="nav-link hover:text-primary transition-colors"
+            >Gallery</a
+          >
+          <a
+            href="#contact"
+            class="nav-link hover:text-primary transition-colors"
+            >Contact</a
+          >
+        </div>
+
+        <a
+          href="#booking"
+          class="hidden md:block px-6 py-3 text-xs font-bold uppercase tracking-widest text-white bg-primary hover:bg-secondary transition duration-300"
+          >Book Now</a
+        >
+
+        <button
+          id="mobile-menu-toggle"
+          class="md:hidden text-secondary focus:outline-none"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16m-7 6h7"
+            ></path>
+          </svg>
+        </button>
+      </nav>
+
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden bg-white border-t border-gray-100"
+      >
+        <div
+          class="px-4 py-4 space-y-2 flex flex-col items-center font-serif text-lg"
+        >
+          <a
+            href="#home"
+            class="nav-link block px-3 py-2 text-gray-800 hover:text-primary"
+            >Home</a
+          >
+          <a
+            href="#about"
+            class="nav-link block px-3 py-2 text-gray-800 hover:text-primary"
+            >About</a
+          >
+          <a
+            href="#rooms"
+            class="nav-link block px-3 py-2 text-gray-800 hover:text-primary"
+            >Rooms</a
+          >
+          <a
+            href="#gallery"
+            class="nav-link block px-3 py-2 text-gray-800 hover:text-primary"
+            >Gallery</a
+          >
+          <a
+            href="#booking"
+            class="nav-link block px-3 py-2 text-primary font-bold"
+            >Book Now</a
+          >
+          <a
+            href="#contact"
+            class="nav-link block px-3 py-2 text-gray-800 hover:text-primary"
+            >Contact</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section
+        id="home"
+        class="hero-bg h-[85vh] flex items-center justify-center text-center text-white relative"
+      >
+        <div class="absolute inset-0 bg-black/40 z-0"></div>
+        <div class="z-10 px-6 max-w-4xl hero-content-animation">
+          <p
+            class="text-sm md:text-base mb-6 font-bold uppercase tracking-[0.3em] text-primary"
+          >
+            Luxury Coastal Living
+          </p>
+          <h2
+            class="text-5xl md:text-7xl lg:text-8xl font-serif font-medium mb-8 text-white leading-tight"
+          >
+            Welcome to<br />De Brakke
+          </h2>
+          <a
+            href="#booking"
+            class="inline-block border-2 border-white px-8 py-3 text-sm font-bold uppercase tracking-widest text-white hover:bg-white hover:text-secondary transition duration-300"
+          >
+            Check Availability
+          </a>
+        </div>
+      </section>
+
+      <section id="about" class="py-20 md:py-28 bg-white">
+        <div class="container mx-auto px-6 lg:px-12">
+          <div class="grid md:grid-cols-2 gap-16 items-center">
+            <div class="reveal-up order-2 md:order-1">
+              <div class="mb-6">
+                <span
+                  class="text-primary font-bold uppercase tracking-widest text-xs"
+                  >Our Story</span
+                >
+                <h3
+                  class="text-4xl md:text-5xl font-serif text-secondary mt-3 leading-tight"
+                >
+                  A Haven in Stilbaai West
+                </h3>
+              </div>
+              <p class="text-lg text-gray-500 font-light leading-relaxed mb-6">
+                De Brakke Guesthouse offers a tranquil and stylish stay in the
+                sought-after area of Stilbaai West. Our design philosophy
+                centers on light, open spaces and a refreshing palette that
+                mirrors the nearby ocean.
+              </p>
+              <p class="text-gray-500 leading-relaxed mb-8">
+                Perfect for families or couples, featuring two beautifully
+                appointed bedrooms with luxury en-suite bathrooms.
+              </p>
+              <a
+                href="#rooms"
+                class="text-primary font-bold uppercase tracking-widest text-xs border-b-2 border-primary pb-1 hover:text-secondary hover:border-secondary transition"
+              >
+                View Rooms &rarr;
+              </a>
+            </div>
+            <div class="order-1 md:order-2 reveal-up">
+              <div class="relative pl-6 pb-6">
+                <div
+                  class="absolute top-0 right-0 w-full h-full bg-light -z-10 translate-x-4 -translate-y-4"
+                ></div>
+                <img
+                  src="images/Image 17.jpg"
+                  alt="Exterior View"
+                  class="w-full shadow-lg"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="rooms" class="py-20 md:py-28 bg-light">
+        <div class="container mx-auto px-6 lg:px-12">
+          <header class="mb-16 text-center reveal-up">
+            <span
+              class="text-primary font-bold uppercase tracking-widest text-xs"
+              >Accommodation</span
+            >
+            <h3 class="text-4xl md:text-5xl font-serif text-secondary mt-3">
+              Our Luxury Rooms
+            </h3>
+          </header>
+
+          <div class="grid md:grid-cols-2 gap-10">
+            <div
+              class="bg-white group hover:shadow-2xl transition duration-500 reveal-up"
+            >
+              <div class="overflow-hidden relative h-64 md:h-72">
+                <img
+                  src="images/Image 4.jpg"
+                  alt="Main Suite"
+                  class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700"
+                  loading="lazy"
+                  id="main-suite-img"
+                />
+                <div
+                  class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer"
+                >
+                  <span
+                    class="text-white border border-white px-4 py-2 uppercase text-xs tracking-widest"
+                    >View Gallery</span
+                  >
+                </div>
+              </div>
+              <div
+                class="p-8 border-b-4 border-transparent group-hover:border-primary transition duration-300"
+              >
+                <h4 class="text-2xl font-serif text-secondary mb-2">
+                  The Main Suite
+                </h4>
+                <p class="text-sm text-gray-500 mb-4">
+                  King Size Comfort • En-Suite • Garden View
+                </p>
+                <p class="text-gray-600 font-light mb-4">
+                  Designed for ultimate relaxation with spacious interiors and a
+                  luxurious double basin bathroom.
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="bg-white group hover:shadow-2xl transition duration-500 reveal-up"
+            >
+              <div class="overflow-hidden relative h-64 md:h-72">
+                <img
+                  src="images/Image 11.jpg"
+                  alt="Twin Room"
+                  class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700"
+                  loading="lazy"
+                  id="twin-room-img"
+                />
+                <div
+                  class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer"
+                >
+                  <span
+                    class="text-white border border-white px-4 py-2 uppercase text-xs tracking-widest"
+                    >View Gallery</span
+                  >
+                </div>
+              </div>
+              <div
+                class="p-8 border-b-4 border-transparent group-hover:border-primary transition duration-300"
+              >
+                <h4 class="text-2xl font-serif text-secondary mb-2">
+                  The Twin Room
+                </h4>
+                <p class="text-sm text-gray-500 mb-4">
+                  Twin Beds • En-Suite • Natural Light
+                </p>
+                <p class="text-gray-600 font-light mb-4">
+                  Versatile and comfortable, perfect for friends or siblings
+                  with all modern amenities.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-16 border-t border-gray-200 pt-10 reveal-up">
+            <div class="text-center mb-12 reveal-up">
+              <span
+                class="text-primary font-bold uppercase tracking-widest text-xs"
+              >
+                Property Features
+              </span>
+              <h4
+                class="text-3xl md:text-4xl font-serif text-secondary mt-3 mb-4"
+              >
+                Designed for Your Comfort
+              </h4>
+              <div class="w-24 h-[2px] bg-primary mx-auto"></div>
+              <p class="text-gray-500 mt-4 max-w-2xl mx-auto">
+                Enjoy a seamless stay with modern amenities perfectly suited for
+                relaxation and convenience.
+              </p>
+            </div>
+            <div
+              class="flex flex-wrap justify-center gap-8 md:gap-16 text-center"
+            >
+              <div class="flex flex-col items-center">
+                <span class="text-3xl mb-2 text-primary">🛋️</span>
+                <span
+                  class="uppercase tracking-widest text-xs font-bold text-gray-400"
+                  >Lounge</span
+                >
+              </div>
+              <div class="flex flex-col items-center">
+                <span class="text-3xl mb-2 text-primary">🍳</span>
+                <span
+                  class="uppercase tracking-widest text-xs font-bold text-gray-400"
+                  >Kitchen</span
+                >
+              </div>
+              <div class="flex flex-col items-center">
+                <span class="text-3xl mb-2 text-primary">🍽️</span>
+                <span
+                  class="uppercase tracking-widest text-xs font-bold text-gray-400"
+                  >Dining Area</span
+                >
+              </div>
+              <div class="flex flex-col items-center">
+                <span class="text-3xl mb-2 text-primary">📺</span>
+                <span
+                  class="uppercase tracking-widest text-xs font-bold text-gray-400"
+                  >Smart TV</span
+                >
+              </div>
+              <div class="flex flex-col items-center">
+                <span class="text-3xl mb-2 text-primary">📶</span>
+                <span
+                  class="uppercase tracking-widest text-xs font-bold text-gray-400"
+                  >Free Wifi</span
+                >
+              </div>
+              <div class="flex flex-col items-center">
+                <span class="text-3xl mb-2 text-primary">🅿️</span>
+                <span
+                  class="uppercase tracking-widest text-xs font-bold text-gray-400"
+                  >Parking</span
+                >
+              </div>
+              <div class="flex flex-col items-center">
+                <span class="text-3xl mb-2 text-primary">🚿</span>
+                <span
+                  class="uppercase tracking-widest text-xs font-bold text-gray-400"
+                  >Private Bathroom</span
+                >
+                <span
+                  class="uppercase tracking-widest text-xs font-bold text-gray-400"
+                  >Shower (each room)</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="gallery" class="py-20 md:py-28 bg-white">
+        <div class="container mx-auto px-6 text-center mb-12 reveal-up">
+          <span class="text-primary font-bold uppercase tracking-widest text-xs"
+            >Visual Tour</span
+          >
+          <h3 class="text-4xl md:text-5xl font-serif text-secondary mt-3">
+            The Gallery
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-1 px-1 reveal-up">
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 1.jpg"
+              alt="Lounge area"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 2.jpg"
+              alt="Kitchen area"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 3.jpg"
+              alt="Main Suite view"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 4.jpg"
+              alt="Main Suite bedroom"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 7.jpg"
+              alt="Seating area"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 8.jpg"
+              alt="Smart TV in lounge"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 10.jpg"
+              alt="Twin Room angle"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 16.jpg"
+              alt="Scenic interior view"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 5.jpg"
+              alt="Bathroom"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 6.jpg"
+              alt="Dining area"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 9.jpg"
+              alt="Bathroom vanity"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 11.jpg"
+              alt="Twin Room beds"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 12.jpg"
+              alt="Garden patio"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 13.jpg"
+              alt="Exterior view"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 14.jpg"
+              alt="Bedroom detail"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 15.jpg"
+              alt="Entrance hallway"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 17.jpg"
+              alt="Lounge overview"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 18.jpg"
+              alt="Exterior landscape"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+          <div
+            class="gallery-item aspect-square overflow-hidden cursor-pointer relative group"
+          >
+            <img
+              src="images/Image 19.jpg"
+              alt="Parking area"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-90"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="booking"
+        class="py-20 md:py-28 bg-light border-t border-gray-200"
+      >
+        <div class="container mx-auto px-6 lg:px-12">
+          <div class="grid lg:grid-cols-2 gap-16">
+            <div
+              class="bg-white p-8 md:p-12 shadow-xl border-t-4 border-primary reveal-up"
+            >
+              <h3 class="text-3xl font-serif text-secondary mb-2">
+                Book Your Stay
+              </h3>
+              <div
+                class="flex flex-col md:flex-row md:items-center md:justify-between mb-6"
+              >
+                <p class="text-primary font-bold text-xl mb-2 md:mb-0">
+                  From R1800 ZAR / Night
+                </p>
+                <div class="flex items-center gap-4">
+                  <p class="text-gray-400 italic text-sm">
+                    Rates vary based on seasonality.
+                  </p>
+                  <div
+                    class="flex items-center gap-2 text-xs text-gray-500 uppercase tracking-wider font-bold"
+                  >
+                    <span
+                      class="w-4 h-4 bg-gray-100 border border-gray-300 inline-block diagonal-strike"
+                    ></span>
+                    <span>Reserved Dates</span>
+                  </div>
+                </div>
+              </div>
+
+              <form
+                id="booking-form"
+                class="space-y-5"
+                name="booking-form"
+                method="POST"
+                data-netlify="true"
+                netlify-honeypot="bot-field"
+              >
+                <input type="hidden" name="form-name" value="booking-form" />
+                <input
+                  type="hidden"
+                  name="subject"
+                  value="NEW BOOKING FOR DE BRAKKE GUESTHOUSE!"
+                />
+                <input
+                  type="text"
+                  name="bot-field"
+                  class="hidden"
+                  aria-hidden="true"
+                />
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      class="block text-xs uppercase font-bold text-gray-500 mb-1"
+                      >Check-in</label
+                    >
+                    <input
+                      type="text"
+                      id="check-in"
+                      name="check-in"
+                      placeholder="Select Date"
+                      readonly
+                      required
+                      class="w-full border-b border-gray-300 py-2 focus:border-primary focus:outline-none transition-colors bg-transparent cursor-pointer"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs uppercase font-bold text-gray-500 mb-1"
+                      >Check-out</label
+                    >
+                    <input
+                      type="text"
+                      id="check-out"
+                      name="check-out"
+                      placeholder="Select Date"
+                      readonly
+                      required
+                      class="w-full border-b border-gray-300 py-2 focus:border-primary focus:outline-none transition-colors bg-transparent cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      class="block text-xs uppercase font-bold text-gray-500 mb-1"
+                      >Guests</label
+                    >
+                    <select
+                      name="adults"
+                      class="w-full border-b border-gray-300 py-2 focus:border-primary focus:outline-none bg-transparent"
+                    >
+                      <option>1 Adult</option>
+                      <option selected>2 Adults</option>
+                      <option>3 Adults</option>
+                      <option>4 Adults</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs uppercase font-bold text-gray-500 mb-1"
+                      >Children</label
+                    >
+                    <select
+                      name="children"
+                      class="w-full border-b border-gray-300 py-2 focus:border-primary focus:outline-none bg-transparent"
+                    >
+                      <option>No Children</option>
+                      <option>1 Child</option>
+                      <option>2 Children</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    class="block text-xs uppercase font-bold text-gray-500 mb-1"
+                    >Full Name</label
+                  >
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="John Doe"
+                    required
+                    class="w-full border-b border-gray-300 py-2 focus:border-primary focus:outline-none bg-transparent"
+                  />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      class="block text-xs uppercase font-bold text-gray-500 mb-1"
+                      >Email</label
+                    >
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="john@example.com"
+                      required
+                      class="w-full border-b border-gray-300 py-2 focus:border-primary focus:outline-none bg-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs uppercase font-bold text-gray-500 mb-1"
+                      >Phone</label
+                    >
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="063 123 4567"
+                      class="w-full border-b border-gray-300 py-2 focus:border-primary focus:outline-none bg-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    class="block text-xs uppercase font-bold text-gray-500 mb-1"
+                    >Message</label
+                  >
+                  <textarea
+                    name="message"
+                    rows="3"
+                    placeholder="Special requests or questions"
+                    class="w-full border-b border-gray-300 py-2 focus:border-primary focus:outline-none bg-transparent"
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  class="w-full mt-4 bg-secondary text-white font-bold uppercase tracking-widest py-4 hover:bg-primary transition duration-300"
+                >
+                  Request Reservation
+                </button>
+                <div
+                  id="booking-message"
+                  class="hidden text-center mt-2 text-green-600 font-bold"
+                ></div>
+              </form>
+            </div>
+
+            <div
+              class="flex flex-col justify-center space-y-10 reveal-up"
+              id="contact"
+            >
+              <img
+                src="images/De Brakke Front view.webp"
+                alt="Front view of De Brakke Guesthouse"
+                loading="lazy"
+                class="w-full h-48 md:h-64 object-cover mb-6"
+              />
+              <div>
+                <span
+                  class="text-primary font-bold uppercase tracking-widest text-xs"
+                  >Information</span
+                >
+                <h3 class="text-4xl font-serif text-secondary mt-2">
+                  Contact Us
+                </h3>
+                <p class="mt-4 text-gray-500 leading-relaxed">
+                  We are here to help you plan your perfect getaway. Feel free
+                  to contact Wilma for rates, availability, or special requests.
+                </p>
+              </div>
+              <div class="space-y-6">
+                <div class="flex items-center space-x-4">
+                  <div
+                    class="w-12 h-12 bg-light flex items-center justify-center text-primary rounded-full"
+                  >
+                    📞
+                  </div>
+                  <div>
+                    <span
+                      class="block text-xs uppercase font-bold text-gray-400"
+                      >Phone</span
+                    >
+                    <a
+                      href="tel:0635978505"
+                      class="text-xl font-serif text-secondary hover:text-primary"
+                      >063 597 8505</a
+                    >
+                  </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                  <div
+                    class="w-12 h-12 bg-light flex items-center justify-center text-primary rounded-full"
+                  >
+                    ✉️
+                  </div>
+                  <div>
+                    <span
+                      class="block text-xs uppercase font-bold text-gray-400"
+                      >Email</span
+                    >
+                    <a
+                      href="mailto:wilmajprinsloo@gmail.com"
+                      class="text-xl font-serif text-secondary hover:text-primary"
+                      >wilmajprinsloo@gmail.com</a
+                    >
+                  </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                  <div
+                    class="w-12 h-12 bg-light flex items-center justify-center text-primary rounded-full"
+                  >
+                    📍
+                  </div>
+                  <div>
+                    <span
+                      class="block text-xs uppercase font-bold text-gray-400"
+                      >Address</span
+                    >
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=27%20Prinsloo%20Drive%2C%20Stilbaai%20West"
+                      target="_blank"
+                      rel="noopener"
+                      class="text-lg font-serif text-secondary hover:text-primary"
+                    >
+                      27 Prinsloo Drive, Stilbaai West
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-secondary text-white py-12 border-t border-white/10">
+      <div class="container mx-auto px-6 text-center">
+        <h5 class="text-3xl font-serif font-bold text-white mb-6">
+          De Brakke Guesthouse
+        </h5>
+
+        <div class="flex justify-center space-x-8 mb-8 text-gray-400">
+          <a href="#home" class="hover:text-primary transition">Home</a>
+          <a href="#rooms" class="hover:text-primary transition">Rooms</a>
+          <a href="#gallery" class="hover:text-primary transition">Gallery</a>
+          <a href="#contact" class="hover:text-primary transition">Contact</a>
+        </div>
+
+        <div class="text-xs text-gray-500 uppercase tracking-widest">
+          <p>&copy; 2025 De Brakke Guesthouse. All rights reserved.</p>
+          <p class="mt-2">
+            Designed by
+            <a
+              href="https://rcdigitalcreations.co.za/"
+              target="_blank"
+              rel="noopener"
+              class="text-primary hover:text-white transition"
+              >RC Digital Creations</a
+            >
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <button
+      id="scroll-to-top"
+      aria-label="Scroll to top"
+      class="hidden fixed bottom-6 right-6 z-[99] bg-primary text-white p-3 shadow-lg transition-all duration-300 hover:bg-secondary"
+    >
+      ↑
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+      if (window.FIREBASE_CONFIG) {
+        const app = initializeApp(window.FIREBASE_CONFIG);
+        const db = getFirestore(app);
+        window.db = db;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.getDocs = getDocs;
+        console.log("✅ Firebase Connected!");
+      } else {
+        console.error("❌ Error: firebase-config.js not loaded.");
+      }
+    </script>
+    <script src="main.js" defer></script>
+  </body>
+</html>

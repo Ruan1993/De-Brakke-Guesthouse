@@ -1,0 +1,142 @@
+:root {
+    --color-primary: #c19b76; /* Hotelzo Gold */
+    --color-secondary: #202020; /* Dark Charcoal */
+    --color-bg: #ffffff;
+    --color-text: #4b5563; 
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    scroll-behavior: smooth;
+    line-height: 1.7;
+}
+
+/* Luxury Link Hover */
+.nav-link {
+    position: relative;
+    transition: color 0.3s ease;
+}
+/* Underline animation for links */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--color-primary);
+    transition: width 0.3s ease;
+}
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Custom Hero styling */
+.hero-bg {
+    position: relative;
+    background: none;
+    background-size: cover;
+    background-position: center;
+    min-height: 85vh; /* Taller hero */
+    z-index: 1;
+}
+
+.hero-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Use Image 18 as the main hero background */
+    background: url('images/Image 18.jpg');
+    background-size: cover;
+    background-position: center;
+    /* No opacity on image itself, handled by overlay div in HTML */
+    z-index: -1; 
+}
+
+/* Remove default scrollbar styling for a cleaner look */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #d1d5db; 
+    border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+}
+
+/* Input Styles - Minimalist Border Bottom */
+input, select, textarea {
+    border-radius: 0 !important; /* Force sharp edges */
+}
+input:focus, select:focus, textarea:focus {
+    box-shadow: none !important;
+    border-color: var(--color-primary) !important;
+}
+
+/* Animation Classes */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-content-animation {
+    animation: fadeInDown 1.2s ease-out 0.2s backwards;
+}
+
+.reveal-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.reveal-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+/* --- CALENDAR UPGRADES --- */
+/* 1. Custom "Booked" Style (Diagonal Stripes + Strikethrough) */
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+    background:
+        linear-gradient(45deg, transparent 48%, rgba(239, 68, 68, 0.6) 49%, rgba(239, 68, 68, 0.6) 51%, transparent 52%),
+        #fee2e2 !important;
+    color: #b91c1c !important;
+    font-weight: normal;
+    opacity: 1;
+    border-color: transparent !important;
+}
+/* 2. Make the "Available" days look clearer (White background) */
+.flatpickr-day {
+    background: #ffffff;
+    border: 1px solid #f3f4f6;
+}
+/* 3. Highlight "Today" with your Gold Theme */
+.flatpickr-day.today {
+    border-color: var(--color-primary) !important;
+    color: var(--color-secondary) !important;
+}
+.flatpickr-day.today:hover {
+    background: var(--color-primary) !important;
+    color: #ffffff !important;
+}
+/* Legend square for helper note */
+.diagonal-strike {
+    background:
+        linear-gradient(45deg, transparent 48%, rgba(239, 68, 68, 0.6) 49%, rgba(239, 68, 68, 0.6) 51%, transparent 52%),
+        #fee2e2;
+}
