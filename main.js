@@ -8,6 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
         menuToggle.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        if (mobileLinks && mobileLinks.length > 0) {
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        }
     }
 
     // --- Custom Message Box Function ---
